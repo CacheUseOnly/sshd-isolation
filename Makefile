@@ -23,7 +23,7 @@ all: $(SERVER_BIN) $(ISO_LIB) $(TEST_BIN)
 # Build server binary
 $(SERVER_BIN): $(SERVER_SRC)
 	mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) -o $(SERVER_BIN) $(SERVER_SRC)
+	$(CC) $(CFLAGS) -llzma -o $(SERVER_BIN) $(SERVER_SRC)
 
 # Build client as a shared object (.so)
 $(ISO_LIB): $(ISO_SRC)
@@ -33,7 +33,7 @@ $(ISO_LIB): $(ISO_SRC)
 # Build test program linking to libisolation
 $(TEST_BIN): $(TEST_SRC) $(ISO_LIB)
 	mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) -L$(LIB_DIR) -Wl,-rpath=$(LIB_DIR) -lisolation -o $(TEST_BIN) $(TEST_SRC)
+	$(CC) $(CFLAGS) -L$(LIB_DIR) -Wl,-rpath=$(LIB_DIR) -lisolation -llzma -o $(TEST_BIN) $(TEST_SRC)
 
 # Clean build files
 clean:

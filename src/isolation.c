@@ -29,6 +29,44 @@ int __iso_setup_socket()
     return sock_fd;
 }
 
+lzma_bool caged_lzma_check_is_supported(lzma_check type) {
+    int sock_fd;
+    struct payload *buffer;
+    size_t payload_size;
+    ssize_t read_size;
+    lzma_bool res;
+
+    sock_fd = __iso_setup_socket();
+    if (sock_fd == -1) {
+        perror("__iso_setup_socket()");
+        return -1;
+    }
+
+    payload_size = payload_header + sizeof(type);
+    buffer = (struct payload*)malloc(payload_size);
+    buffer->id = CAGED_LZMA_CHECK_IS_SUPPORTED;
+    buffer->payload_size = payload_size;
+    memcpy(buffer->data, &type, sizeof(type));
+
+    write(sock_fd, buffer, buffer->payload_size);
+
+    read_size = read(sock_fd, buffer, sizeof(lzma_bool));
+    if (read_size == -1) {
+        perror("read()");
+        goto err;
+    }
+    res = *(lzma_bool*)buffer;
+
+    close(sock_fd);
+    free(buffer);
+    return res;
+
+err:
+    close(sock_fd);
+    free(buffer);
+    return -1;
+}
+
 int iso_add(int a, int b)
 {
     int sock_fd, res;

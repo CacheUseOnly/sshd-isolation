@@ -12,6 +12,7 @@ int iso_dispatcher(void *payload, int fd);
 
 int proc_add(void *data, int fd);
 int proc_cat(void *data, int fd);
+int proc_caged_lzma_check_is_supported(void *data, int fd);
 
 struct __func_table {
     enum func_id id;
@@ -21,6 +22,7 @@ struct __func_table {
 const struct __func_table func_table[] = {
     {ISO_ADD,   proc_add},
     {ISO_CAT,   proc_cat},
+    {CAGED_LZMA_CHECK_IS_SUPPORTED, proc_caged_lzma_check_is_supported},
     {ISO_NONE,  NULL},
 };
 
@@ -153,5 +155,24 @@ int proc_cat(void *data, int fd)
     write(fd, res, read_size);
 
     close(file_fd);
+    return 0;
+}
+
+int proc_caged_lzma_check_is_supported(void *data, int fd) {
+    lzma_bool *res;
+    lzma_check *extracted;
+
+    res = (lzma_bool*)malloc(sizeof(*res));
+    if (!res) {
+        return -ENOMEM;
+    }
+    extracted = (lzma_check*)data;
+
+    *res = lzma_check_is_supported(*extracted);
+    printf("caged_lzma_check_is_supported(%d): %u\n", *extracted, *res);
+    fflush(stdout);
+
+    write(fd, res, sizeof(*res));
+
     return 0;
 }
