@@ -25,8 +25,6 @@ int main(int argc, char** argv)
 
     /* Call the caged version of lzma_check_is_supported */
     else if (strcmp(argv[1], "support") == 0) {
-        printf("result of caged_lzma_check_is_supported(LZMA_CHECK_SHA256): %u\n",
-                caged_lzma_check_is_supported(LZMA_CHECK_SHA256));
         printf("result of lzma_check_is_supported(LZMA_CHECK_SHA256): %u\n",
                 lzma_check_is_supported(LZMA_CHECK_SHA256));
     }

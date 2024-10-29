@@ -17,15 +17,24 @@ Initially, a program would directly call functions from a shared object:
            +----------+                        +----------+
 ```
 
-Now, an agent is set to intercept any call to the library, if permitted, the
-call will be direct to the RPC modified library:
+Now, an additional .so is set to override white-listed calls to the library, if
+permitted, the call will be direct to the RPC modified library:
 
 ```
-           +----------+       +--------+       +----------+
-           |          | ----> |        | ----> |          |
-           | Program  |       | Agent  |       | Library  |
-           |          | <---- |        | <---- |          |
-           +----------+       +--------+       +----------+
+           +------------+                      +----------+
+           |            | -------------------> |          |
+           |libisolation|                      |RPC Server|
+           |            | <------------------- |          |
+           +------------+                      +----------+
+                ^                                   ^
+                | isolated calls                    |
+                |                                   |
+                v                                   v
+           +----------+                        +----------+
+           |          | ---------------------> |          |
+           | Program  |   other calls          | Library  |
+           |          | <--------------------- |          |
+           +----------+                        +----------+
 ```
 
 ## Usage
@@ -41,17 +50,26 @@ The repository includes:
 To build and use the components in this repository, you can follow these commands:
 
 ```bash
-make all
+make
 ```
 
 ## Demo
 
-1. Change to `build/` directory: `cd build/`
-2. In terminal 1, run `server` to start the server.
-3. In terminal 2, run either of the following:
-  a. `./caged_prog add <a> <b>`: This routine adds `a` and `b`.
-  b. `./caged_prog cat <path_to_file>`: This routine print the first 8 character
+### Demo program
+
+1. In terminal 1, run `build/server` to start the server.
+2. In terminal 2, run either of the following:
+  a. `build/caged_prog add <a> <b>`: This routine adds `a` and `b`.
+  b. `build/caged_prog cat <path_to_file>`: This routine print the first 8 character
   of the given file
+  c. `build/caged_prog support`: This routine calls the caged version of
+  `lzma_check_is_supported()`.
+
+### Isolate xz
+
+1. In terminal 1, run `build/server` to start the server.
+2. In terminal 2, run `LD_PRELOAD=$(shell pwd)/build/lib/libisolation.so xz -z src/caged_prog.c -k`
+  - You should see that the server prints log the call from `xz`.
 
 ## About ntirpc
 

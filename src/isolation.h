@@ -9,7 +9,7 @@
 
 extern int iso_add(int a, int b);
 extern char* iso_cat(char *file);
-extern lzma_bool caged_lzma_check_is_supported(lzma_check type);
+extern lzma_bool lzma_check_is_supported(lzma_check type);
 
 enum func_id {
     ISO_ADD = 0,

@@ -1,0 +1,18 @@
+XZ_5.0 {
+	global: lzma_check_is_supported;
+	local: *;
+};
+
+XZ_5.2 {
+	global: lzma_check_is_supported;
+	local: *;
+} XZ_5.0;
+
+XZ_5.4 {
+	global: lzma_check_is_supported;
+	local: *;
+} XZ_5.2;
+
+LIBISO_0.1 {
+	global: iso_add; iso_cat;
+};

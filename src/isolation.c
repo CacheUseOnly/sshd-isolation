@@ -29,7 +29,7 @@ int __iso_setup_socket()
     return sock_fd;
 }
 
-lzma_bool caged_lzma_check_is_supported(lzma_check type) {
+lzma_bool lzma_check_is_supported(lzma_check type) {
     int sock_fd;
     struct payload *buffer;
     size_t payload_size;
